@@ -20,7 +20,7 @@ tempo: venv install
 all: tempo
 
 clean:
-	-rm tempo 2&> /dev/null || true
+	-rm tempo || true
 
 purge: clean
-	-rm -rf venv 2&> /dev/null || true
+	-rm -rf venv || true
