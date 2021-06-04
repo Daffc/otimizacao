@@ -54,43 +54,46 @@ def constroiEstruturas(tempo_maximo):
 def gerarMatrizPadroes(tmp_total, tempos, menor_tempo):
 
   # Inicializa todas as 'bolsas' com valor de moeda.
-  bolsas = [[coin] for coin in tempos]
+  bolsas = [[tempo] for tempo in tempos]
   new_bolsas = []
   matriz_padrões = []
 
-  # Enquanto existires 'bolsas' passíveis de incremento.
+  #  Percorre todas as bolsas verificando se alguma delas já tem valor maximal
+  for bolsa in list(bolsas):
+    reminder = tmp_total - sum(bolsa)
+    
+    # Caso bolsa maximal tenha sido encontrada, inserir seu padrão em 'matriz_padrões' e remover de bolsas.
+    if ((reminder < menor_tempo) and (reminder >= 0)):
+      matriz_padrões.append([0]*len(tempos))
+      matriz_padrões[-1][tempos.index(bolsa[0])] += 1
+      bolsas.remove(bolsa)
+
+  # Enquanto existirem 'bolsas' passíveis de incremento.
   while bolsas:
 
     for bolsa in bolsas:
       soma = sum(bolsa)
-      reminder = tmp_total - soma
-      
-      # Caso 'bolsa[0]' já preencha o máximo possível.
-      if ((reminder < menor_tempo) and (reminder >= 0)):
-        matriz_padrões.append([0]*len(tempos))
-        for coin in (bolsa):
-          matriz_padrões[-1][tempos.index(coin)] += 1
-        next
-      
-      # Pra cada 'coin' in 'tempos':
-      for coin in tempos:
 
-        # Caso nova 'coin' seja maior que a anteriormente adicionada:
-        if coin >= bolsa[-1]:
-          reminder = tmp_total - (soma + coin)
-          
-          # Caso seja possível adicionar 'coin', adiciona 'coin' em 'bolsa' cria nova 'bolsa' em 'new_bolsa' 
+      # Pra cada 'tempo' in 'tempos':
+      for tempo in tempos:
+
+        # Caso nova 'tempo' seja maior que a anteriormente adicionada:
+        if tempo >= bolsa[-1]:
+
+          reminder = tmp_total - (soma + tempo)
+
+          # Caso seja possível adicionar 'tempo', adiciona 'tempo' em 'bolsa' cria nova 'bolsa' em 'new_bolsa' 
           if (reminder >=  menor_tempo):
-            new_bolsas.append(bolsa + [coin])
+            new_bolsas.append(bolsa + [tempo])
             
-          # Caso não seja possível adicionar 'coin', maximal encontrado, registrar em matriz.
+          # Caso não seja possível adicionar 'tempo', maximal encontrado, registrar em matriz_padrões.
           elif ((reminder < menor_tempo) and (reminder >= 0)):   
-
+            # Adiciona novo padrão a matriz_padrões, somando 1 a index de cada 'tempo' em 'bolsa'.
             matriz_padrões.append([0]*len(tempos))
-            for coin in (bolsa + [coin]):
-              matriz_padrões[-1][tempos.index(coin)] += 1
+            for tempo in (bolsa + [tempo]):
+              matriz_padrões[-1][tempos.index(tempo)] += 1
 
-    # define 'bolsas' com lista de 'bolsa' que ainda são passíveis de incremento ('new_bolsas')
+    # Define 'bolsas' com lista de 'bolsa' que ainda são passíveis de incremento ('new_bolsas')
     bolsas = new_bolsas
     new_bolsas = []
   
