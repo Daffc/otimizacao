@@ -33,7 +33,7 @@ def gerarMatrizPadroes(tmp_total, tempos, menor_tempo):
   new_bolsas = []
   matriz_padrões = []
 
-  # Enquanto existires 'bolsas' passíveis de preenchimento.
+  # Enquanto existires 'bolsas' passíveis de incremento.
   while bolsas:
 
     for bolsa in bolsas:
@@ -71,6 +71,20 @@ def gerarMatrizPadroes(tmp_total, tempos, menor_tempo):
   
   return matriz_padrões
 
+def imprimeFormatoLp_solve (problema):
+
+  variaveis_padrao = [  f'x{order}' for order, _ in enumerate(problema['matriz_padroes'])]
+
+  funcao_objeto = 'min: ' + (' + '.join(str(e) for e in variaveis_padrao))
+
+  print(funcao_objeto,';','\n')
+  
+  for idx, pedido in enumerate(problema['pedidos']):
+    for var, linha in zip(variaveis_padrao, problema['matriz_padroes']):
+      if(linha[idx] > 0) :
+        print( '+', linha[idx],var , end=' ')
+    print( ' >= ', pedido[0], ';')
+
 def main():
     
   # Armazenando Valores de Entrada do problema
@@ -81,7 +95,8 @@ def main():
   # Gerando matriz de Parões
   problema['matriz_padroes'] = gerarMatrizPadroes(problema['tempo_total'], lista_tempos, min(lista_tempos))
   
-  pprint.pprint(problema)
+  # pprint.pprint(problema)
+  imprimeFormatoLp_solve(problema)
 
 if __name__ == "__main__":
   main()
