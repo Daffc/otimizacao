@@ -2,26 +2,52 @@ import sys
 import pprint
 import argparse
 
-def constroiEstruturas(tempo_total):
+def verificaTransformacao(palavra): 
+  try:
+    return int(palavra)
+  except ValueError:
+    exit(f'"{palavra}" não é um inteiro válido')
+
+def constroiEstruturas(tempo_maximo):
   problema = {}
   
   #Definindo Tempo Total
-  problema["tempo_total"] = tempo_total
+  problema['tempo_maximo'] = tempo_maximo
   
   #Lendo Entradas
   lines = [line.strip() for line in sys.stdin.readlines()]
   line_words = lines[0].split()
 
-  problema['qtn_maquinas'] = int(line_words[0])
-  problema['qtn_tempos'] = int(line_words[1])
+  problema['qtn_maquinas'] = verificaTransformacao(line_words[0])
+  problema['qtn_tempos'] = verificaTransformacao(line_words[1])
+
+  # Verifica se quantidade de pedidos informada é vádila.
+  if (problema['qtn_maquinas'] <= 0):
+    exit(f'Quatidade de máquinas deve ser maior que 0.')
+
+  # Verifica se quantidade de pedidos informada é vádila.
+  if (problema['qtn_tempos'] <= 0):
+    exit(f'Quatidade de tipos de pedido deve ser maior que 0.')
 
   problema['pedidos'] = []
   for index,line in enumerate(lines[1:]):
+    # Verifica se quatidade de tipos de process extrapola o especificado.
     if (index >= problema['qtn_tempos']):
-      exit(f'Existem mais tempos do que o especificado. (Maximo: {problema["qtn_tempos"]})')
+      exit(f'Existem mais tipos de processo que o especificado. (Quantidade Informada: {problema["qtn_tempos"]})')
         
     line_words = line.split()
-    problema['pedidos'].append((int(line_words[0]), int(line_words[1])))
+    qtn_pedido = verificaTransformacao(line_words[0])
+    tempo_pedido = verificaTransformacao(line_words[1])
+
+    # Verifica se pedido possui tempo válido
+    if(not (0 <=tempo_pedido <= problema['tempo_maximo'])): 
+      exit(f'Tempo "{tempo_pedido}" não é válido.')
+
+    # Adiciona tupla (quantidade, valor) a lista 'pedidos'.
+    problema['pedidos'].append((qtn_pedido, tempo_pedido))
+
+  if (len(problema['pedidos']) < problema['qtn_tempos']):
+    exit(f'Quantidade de tempos recebida inferior a indicada (ENCONTRADOS: {len(problema["pedidos"])}, INDICADO: {problema["qtn_tempos"]})')
 
   return problema
 
@@ -103,7 +129,7 @@ def main():
   lista_tempos = [tempo[1] for tempo in problema['pedidos']] 
   
   # Gerando matriz de Parões
-  problema['matriz_padroes'] = gerarMatrizPadroes(problema['tempo_total'], lista_tempos, min(lista_tempos))
+  problema['matriz_padroes'] = gerarMatrizPadroes(problema['tempo_maximo'], lista_tempos, min(lista_tempos))
   
   # pprint.pprint(problema)
   imprimeFormatoLp_solve(problema)
