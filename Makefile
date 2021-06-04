@@ -1,6 +1,8 @@
 PYTHON := python3
 PIP := pip3
 
+MAXIMO ?= 540
+
 .DEFAULT_GOAL := all
 .PHONY := install all clean purge
 
@@ -13,7 +15,7 @@ install: venv
 tempo: venv install
 	echo "#! /usr/bin/env bash" > tempo
 	echo "source venv/bin/activate" >> tempo
-	echo "lp-tempo" >> tempo
+	echo "lp-tempo" $(MAXIMO)  >> tempo
 	echo "deactivate" >> tempo
 	chmod a+x tempo
 

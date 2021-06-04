@@ -1,7 +1,6 @@
 import sys
 import pprint
-
-TEMPO_MAXIMO = 540
+import argparse
 
 def constroiEstruturas(tempo_total):
   problema = {}
@@ -85,10 +84,21 @@ def imprimeFormatoLp_solve (problema):
         print( '+', linha[idx],var , end=' ')
     print( ' >= ', pedido[0], ';')
 
+# Parsing program initialization arguments. 
+def parsingArguments():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("ValorMaximo", help="Indica o valor máximo de minutos por dia-máquina./t")
+    args = parser.parse_args()
+
+    return int(args.ValorMaximo)
+
 def main():
+
+  # Recupera tempo máximo de parâmetro de entrada.
+  tempo_maximo = parsingArguments()
     
   # Armazenando Valores de Entrada do problema
-  problema = constroiEstruturas(TEMPO_MAXIMO)
+  problema = constroiEstruturas(tempo_maximo)
 
   lista_tempos = [tempo[1] for tempo in problema['pedidos']] 
   
