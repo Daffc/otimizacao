@@ -2,12 +2,14 @@ import sys
 import pprint
 import argparse
 
+#  Verifica se valor de 'palavra' pode ser interpretado como interiro. Caso verdadeiro retorna.
 def verificaTransformacao(palavra): 
   try:
     return int(palavra)
   except ValueError:
     exit(f'"{palavra}" não é um inteiro válido')
 
+# Lê entrada e define estritura para abordar problema.
 def constroiEstruturas(tempo_maximo):
   problema = {}
   
@@ -51,6 +53,7 @@ def constroiEstruturas(tempo_maximo):
 
   return problema
 
+# Gera Matriz de padrões para problema, contendo padrão em linhas e valores de variáveis em conlunas.
 def gerarMatrizPadroes(tmp_total, tempos, menor_tempo):
 
   # Inicializa todas as 'bolsas' com valor de tempos.
@@ -60,7 +63,7 @@ def gerarMatrizPadroes(tmp_total, tempos, menor_tempo):
   #  Percorre todas as bolsas verificando se alguma delas já tem valor maximal
   for bolsa in list(bolsas):
     reminder = tmp_total - sum(bolsa)
-    
+
     # Caso bolsa maximal tenha sido encontrada, inserir seu padrão em 'matriz_padroes' e remover de bolsas.
     if ((reminder < menor_tempo) and (reminder >= 0)):
       matriz_padroes.append([0]*len(tempos))
@@ -98,19 +101,24 @@ def gerarMatrizPadroes(tmp_total, tempos, menor_tempo):
   
   return matriz_padroes
 
+# A partir de dados em 'problema', imprime saida compativel com programa 'lp_solve'
 def imprimeFormatoLp_solve (problema):
 
+  # Definindo e printando função objetivo (uma variável para cada padrão encontrado.)
   variaveis_padrao = [  f'x{order}' for order, _ in enumerate(problema['matriz_padroes'])]
-
   funcao_objeto = 'min: ' + (' + '.join(str(e) for e in variaveis_padrao))
-
-  print(funcao_objeto,';','\n')
+  print(funcao_objeto,';\n')
   
+  # Iterando sobre 'pedidos'
   for idx, pedido in enumerate(problema['pedidos']):
+    var_restricoes = []
+    # Agregando os padrões em que 'pedido' aparece o fator em que aparece; Definindo String que compões lado esquerdo de restrição.
     for var, linha in zip(variaveis_padrao, problema['matriz_padroes']):
       if(linha[idx] > 0) :
-        print( '+', linha[idx],var , end=' ')
-    print( ' >= ', pedido[0], ';')
+        var_restricoes.append(f'{linha[idx]} {var}') 
+    # Imprimindo inequação, constando variáveis e valor solicitado de 'pedido'
+    print(*var_restricoes, sep = " + ", end='')
+    print(' >= ', pedido[0], ';')
 
 # Parsing program initialization arguments. 
 def parsingArguments():
