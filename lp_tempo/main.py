@@ -36,14 +36,19 @@ def constroiEstruturas(tempo_maximo):
     # Verifica se quatidade de tipos de process extrapola o especificado.
     if (index >= problema['qtn_tempos']):
       exit(f'Existem mais tipos de processo que o especificado. (Quantidade Informada: {problema["qtn_tempos"]})')
-        
+
     line_words = line.split()
     qtn_pedido = verificaTransformacao(line_words[0])
     tempo_pedido = verificaTransformacao(line_words[1])
 
-    # Verifica se pedido possui tempo válido
-    if(not (0 <=tempo_pedido <= problema['tempo_maximo'])): 
-      exit(f'Tempo "{tempo_pedido}" não é válido.')
+    # Verifica se quatidade de tipos de process extrapola o especificado.
+    if (index >= problema['qtn_tempos']):
+      exit(f'Existem mais tipos de processo que o especificado. (Quantidade Informada: {problema["qtn_tempos"]})')  
+
+    # Verifica se tempo de pedido já foi solicitado anteriormente.
+    for x,y in problema['pedidos'] :
+      if( tempo_pedido == y ): 
+        exit(f'Classe contendo tempo "{tempo_pedido}" repetida.')
 
     # Adiciona tupla (quantidade, valor) a lista 'pedidos'.
     problema['pedidos'].append((qtn_pedido, tempo_pedido))
@@ -106,8 +111,8 @@ def imprimeFormatoLp_solve (problema):
 
   # Definindo e printando função objetivo (uma variável para cada padrão encontrado.)
   variaveis_padrao = [  f'x{order}' for order, _ in enumerate(problema['matriz_padroes'])]
-  funcao_objeto = 'min: ' + (' + '.join(str(e) for e in variaveis_padrao))
-  print(funcao_objeto,';\n')
+  func_obj = 'min: ' + (' + '.join(str(e) for e in variaveis_padrao))
+  print(func_obj,';\n')
   
   # Iterando sobre 'pedidos'
   for idx, pedido in enumerate(problema['pedidos']):
