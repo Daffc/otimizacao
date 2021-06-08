@@ -1,1 +1,0 @@
-from lp_tempo.main import *
