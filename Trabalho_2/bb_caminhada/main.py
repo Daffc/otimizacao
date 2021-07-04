@@ -13,6 +13,9 @@ class Problema:
   def __init__(self):
     self.vertices = 0
     self.grafo = []
+    self.cores = []
+    self.maiorCicloISmples = []
+    self.tamanhoMaiorCicloISmples = 0
 
   def setVertices(self, vertices):
     if (vertices <= 0):
@@ -20,8 +23,9 @@ class Problema:
 
     self.vertices = vertices
     self.grafo = [[0 for col in range(vertices)] for row in range(vertices)]
+    self.cores = [0] * vertices
 
-  def adicionaAresta(self, v_ori, v_dest, valor):
+  def verificaEAdicionaAresta(self, v_ori, v_dest, valor):
     #Verifica se peso é positivo
     if(valor < 0 ):
       exit(f'ERRO: Distância \'{valor}\' inválida.')
@@ -32,14 +36,69 @@ class Problema:
     #Verifica se v_dest é um vértice válido.
     if(v_dest < 0 or v_dest >= self.vertices):
       exit(f'ERRO: Vertice \'{v_dest}\' inválido. (somente de 0 à {self.vertices - 1})')
+    
+    # Efetua adição de aresta
+    self.adicionaAresta(v_ori, v_dest, valor)
 
+  # Adiciona Aresta a matriz de adjacência 'grafo'.
+  def adicionaAresta(self, v_ori, v_dest, valor):
     # Adiciona valor a matrix de adjacencia(simétrica).
     self.grafo[v_ori][v_dest] = self.grafo[v_dest][v_ori] = valor
-    return 0
+
+  # Remove Aresta a matriz de adjacência 'grafo'.
+  def removeAresta(self, v_ori, v_dest):
+    # Adiciona valor a matrix de adjacencia(simétrica).
+    valor = self.grafo[v_ori][v_dest]
+    self.grafo[v_ori][v_dest] = self.grafo[v_dest][v_ori] = 0
+    return valor
+
+  # aplica cor a vertice de posição 'vertice' (1 para visitado e 0 para não visitado.)
+  def mudarCor(self, vertice, cor):
+    self.cores[vertice] = cor
 
   def imprimeProblema(self):
     print(self.vertices)
     pprint(self.grafo)
+    pprint(self.cores)
+
+
+# Busca em profundidade sem Bounds.
+def buscaProdundidadeClassica(problema, vertice, total, caminho):
+  
+  # Adiciona 'vertice' a caminho.
+  caminho.append(vertice)  
+
+  # Caso exita aresta entre vertice atual e vertice 0 (início), uma solução viável foi encontrada.
+  if( vertice == 0 ):
+    print(f"---- {total} ----", *[x+1 for x in caminho])
+
+    #Caso solução viável seja maxímal até o momento, armazenar caminho e tamanho.
+    if (total > problema.tamanhoMaiorCicloISmples):
+      problema.tamanhoMaiorCicloISmples = total
+      problema.maiorCicloISmples = caminho.copy()
+
+    caminho.pop()
+    return  
+
+  # Bloqueia visitas à 'vertice' (cores[vertice] = 1), garantindo ciclo simples.
+  problema.mudarCor(vertice, 1)
+
+  # Percorrer linha da matriz correspondente a 'vertice'
+  for idx_vizinho, peso in enumerate(problema.grafo[vertice]):
+    # Caso exista aresta e vetor não foi visitado.
+    if((peso>0) and not(problema.cores[idx_vizinho])):
+
+      problema.removeAresta(vertice, idx_vizinho)
+      total += peso
+      buscaProdundidadeClassica(problema, idx_vizinho, total, caminho)
+      total -= peso
+      problema.adicionaAresta(vertice, idx_vizinho, peso)
+
+  # Libera visitas à 'vertice' (cores[vertice] = 0).
+  problema.mudarCor(vertice, 0)
+
+  # Remove 'vertice' de caminho.
+  caminho.pop()
     
 # Lê entrada e define estruturas de problema.
 def constroiProblema(problema):
@@ -62,13 +121,13 @@ def constroiProblema(problema):
 
     # Verifica se quantidade de pesos é compativel a vertice v_ori.
     if(len(palavas_linha) != (problema.vertices - v_ori - 1)):
-      exit(f'ERRO: Quantidade informada de pesos inválida (para vertice \'{v_ori}\' somente \'{v_dest + 1}\' pesos indicados).')
+      exit(f'ERRO: Quantidade informada de pesos inválida (para vertice \'{v_ori}\' somente \'{len(palavas_linha)}\' pesos indicados).')
 
     # Percorre pesos, adicionando-os a valores de aresta.
     for v_dest, palavra in enumerate(palavas_linha):
       destino = v_ori + v_dest + 1
       valor = verificaTransformacao(palavra)
-      problema.adicionaAresta(v_ori, destino, valor)
+      problema.verificaEAdicionaAresta(v_ori, destino, valor)
 
   return problema
 
@@ -80,6 +139,19 @@ def main():
   constroiProblema(problema)
 
   problema.imprimeProblema()
+
+  print("---------------------")
+  # Percorrer linha da matriz correspondente a 'vertice'
+  for idx_vizinho, peso in enumerate(problema.grafo[0]):
+    if(peso>0):
+      problema.removeAresta(0, idx_vizinho)      
+      buscaProdundidadeClassica(problema, idx_vizinho, peso, [0])
+      problema.adicionaAresta(0, idx_vizinho, peso)
+      
+  print("---------------------")
+
+  print(problema.tamanhoMaiorCicloISmples)
+  print(*[x+1 for x in problema.maiorCicloISmples])
 
 if __name__ == "__main__":
   main()
