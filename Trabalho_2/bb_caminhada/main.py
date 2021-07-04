@@ -1,5 +1,8 @@
+#TODO: Remover linhas com "# PRINTDEBUG"
+
 import sys
 from pprint import pprint
+from datetime import datetime
 
 #  Verifica se valor de 'palavra' pode ser interpretado como interiro. Caso verdadeiro retorna.
 def verificaTransformacao(palavra): 
@@ -16,6 +19,8 @@ class Problema:
     self.cores = []
     self.maiorCicloISmples = []
     self.tamanhoMaiorCicloISmples = 0
+    self.nosArvore = 0
+    self.tempo = 0
 
   def setVertices(self, vertices):
     if (vertices <= 0):
@@ -62,44 +67,6 @@ class Problema:
     pprint(self.cores)
 
 
-# Busca em profundidade sem Bounds.
-def buscaProdundidadeClassica(problema, vertice, total, caminho):
-  
-  # Adiciona 'vertice' a caminho.
-  caminho.append(vertice)  
-
-  # Caso exita aresta entre vertice atual e vertice 0 (início), uma solução viável foi encontrada.
-  if( vertice == 0 ):
-    print(f"---- {total} ----", *[x+1 for x in caminho])
-
-    #Caso solução viável seja maxímal até o momento, armazenar caminho e tamanho.
-    if (total > problema.tamanhoMaiorCicloISmples):
-      problema.tamanhoMaiorCicloISmples = total
-      problema.maiorCicloISmples = caminho.copy()
-
-    caminho.pop()
-    return  
-
-  # Bloqueia visitas à 'vertice' (cores[vertice] = 1), garantindo ciclo simples.
-  problema.mudarCor(vertice, 1)
-
-  # Percorrer linha da matriz correspondente a 'vertice'
-  for idx_vizinho, peso in enumerate(problema.grafo[vertice]):
-    # Caso exista aresta e vetor não foi visitado.
-    if((peso>0) and not(problema.cores[idx_vizinho])):
-
-      problema.removeAresta(vertice, idx_vizinho)
-      total += peso
-      buscaProdundidadeClassica(problema, idx_vizinho, total, caminho)
-      total -= peso
-      problema.adicionaAresta(vertice, idx_vizinho, peso)
-
-  # Libera visitas à 'vertice' (cores[vertice] = 0).
-  problema.mudarCor(vertice, 0)
-
-  # Remove 'vertice' de caminho.
-  caminho.pop()
-    
 # Lê entrada e define estruturas de problema.
 def constroiProblema(problema):
 
@@ -131,6 +98,49 @@ def constroiProblema(problema):
 
   return problema
 
+#----------------------------
+#       CLASSICO
+#----------------------------
+
+# Busca em profundidade sem Bounds.
+def buscaProdundidadeClassica(problema, vertice, total, caminho):
+  
+  # Adiciona 'vertice' a caminho.
+  caminho.append(vertice)
+  problema.nosArvore += 1
+  
+  # Caso exita aresta entre vertice atual e vertice 0 (início), uma solução viável foi encontrada.
+  if( vertice == 0 ):
+    print(f"---- {total} ----", *[x+1 for x in caminho]) # PRINTDEBUG
+
+    #Caso solução viável seja maxímal até o momento, armazenar caminho e tamanho.
+    if (total > problema.tamanhoMaiorCicloISmples):
+      problema.tamanhoMaiorCicloISmples = total
+      problema.maiorCicloISmples = caminho.copy()
+
+    caminho.pop()
+    return  
+
+  # Bloqueia visitas à 'vertice' (cores[vertice] = 1), garantindo ciclo simples.
+  problema.mudarCor(vertice, 1)
+
+  # Percorrer linha da matriz correspondente a 'vertice'
+  for idx_vizinho, peso in enumerate(problema.grafo[vertice]):
+    # Caso exista aresta e vetor não foi visitado.
+    if((peso>0) and not(problema.cores[idx_vizinho])):
+
+      problema.removeAresta(vertice, idx_vizinho)
+      total += peso
+      buscaProdundidadeClassica(problema, idx_vizinho, total, caminho)
+      total -= peso
+      problema.adicionaAresta(vertice, idx_vizinho, peso)
+
+  # Libera visitas à 'vertice' (cores[vertice] = 0).
+  problema.mudarCor(vertice, 0)
+
+  # Remove 'vertice' de caminho.
+  caminho.pop()
+  
 def main():
   #Inicializando Problema
   problema = Problema()
@@ -138,9 +148,12 @@ def main():
   #Recupera informações de problema de entrada padrão e retorna em objeto 'problema'.
   constroiProblema(problema)
 
-  problema.imprimeProblema()
+  problema.imprimeProblema() # PRINTDEBUG
+  print("---------------------") # PRINTDEBUG
 
-  print("---------------------")
+  problema.tempo = datetime.now()
+  problema.nosArvore = 1
+
   # Percorrer linha da matriz correspondente a 'vertice'
   for idx_vizinho, peso in enumerate(problema.grafo[0]):
     if(peso>0):
@@ -148,10 +161,13 @@ def main():
       buscaProdundidadeClassica(problema, idx_vizinho, peso, [0])
       problema.adicionaAresta(0, idx_vizinho, peso)
       
-  print("---------------------")
+  problema.tempo = datetime.now() - problema.tempo
+
+  print("---------------------") # PRINTDEBUG
 
   print(problema.tamanhoMaiorCicloISmples)
   print(*[x+1 for x in problema.maiorCicloISmples])
+  print(f"nos_arvore: {problema.nosArvore}\ntempo: {problema.tempo}", file=sys.stderr)
 
 if __name__ == "__main__":
   main()
