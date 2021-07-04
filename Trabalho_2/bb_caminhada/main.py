@@ -18,7 +18,7 @@ class Problema:
     self.grafo = []
     self.cores = []
     self.maiorCicloISmples = []
-    self.tamanhoMaiorCicloISmples = 0
+    self.tamanhoMaiorCicloSimples = 0
     self.nosArvore = 0
     self.tempo = 0
 
@@ -114,8 +114,8 @@ def buscaProdundidadeClassica(problema, vertice, total, caminho):
     print(f"---- {total} ----", *[x+1 for x in caminho]) # PRINTDEBUG
 
     #Caso solução viável seja maxímal até o momento, armazenar caminho e tamanho.
-    if (total > problema.tamanhoMaiorCicloISmples):
-      problema.tamanhoMaiorCicloISmples = total
+    if (total > problema.tamanhoMaiorCicloSimples):
+      problema.tamanhoMaiorCicloSimples = total
       problema.maiorCicloISmples = caminho.copy()
 
     caminho.pop()
@@ -165,7 +165,7 @@ def main():
 
   print("---------------------") # PRINTDEBUG
 
-  print(problema.tamanhoMaiorCicloISmples)
+  print(problema.tamanhoMaiorCicloSimples)
   print(*[x+1 for x in problema.maiorCicloISmples])
   print(f"nos_arvore: {problema.nosArvore}\ntempo: {problema.tempo}", file=sys.stderr)
 
