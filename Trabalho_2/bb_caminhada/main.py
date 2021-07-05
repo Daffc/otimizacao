@@ -166,10 +166,15 @@ def resolverProblema(problema):
   problema.tempobb = datetime.now()
   problema.nosArvore = 1
 
-  # Percorrer linha da matriz correspondente a 'vertice'
+  # Percorrer linha da matriz correspondente a vertice inicial ('0')
   for idx_vizinho, peso in enumerate(problema.grafo[0]):
     if(peso>0):
-      problema.removeAresta(0, idx_vizinho)      
+      problema.removeAresta(0, idx_vizinho)
+      #Verifica se ainda é possível otimizar o resultado de acordo com o bound.
+      if(boundSomaArestasValidas(problema, peso) <= problema.tamanhoMaiorCicloSimples):
+        problema.adicionaAresta(0, idx_vizinho, peso)
+        continue
+
       buscaProdundidadeBB(problema, idx_vizinho, peso, [0])
       problema.adicionaAresta(0, idx_vizinho, peso)
       
