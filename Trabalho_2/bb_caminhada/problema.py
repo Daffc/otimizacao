@@ -1,6 +1,7 @@
 
 import sys
 from helper import verificaTransformacao
+from pprint import pprint
 
 #Classe agregando estrutudas do problema e suas funcionalidades.
 class Problema:
@@ -59,7 +60,7 @@ class Problema:
   def imprimeProblema(self):
     print(self.vertices)
     pprint(self.grafo)
-    pprint(self.cores)
+    print(self.cores)
 
 
 # Lê entrada e define estruturas de problema.
