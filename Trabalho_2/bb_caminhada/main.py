@@ -107,7 +107,9 @@ def buscaProdundidadeBB(problema, vertice, total, caminho):
         # pprint(problema.grafo) # PRINTDEBUG
         # print('\n') # PRINTDEBUG
         # print("caminho:", caminho) # PRINTDEBUG
-        problema.mudarCor(vertice, 0)
+        problema.mudarCor(vertice, 1)
+        total -= peso
+        problema.adicionaAresta(vertice, idx_vizinho, peso)
         caminho.pop()
         return
       buscaProdundidadeBB(problema, idx_vizinho, total, caminho)
@@ -169,12 +171,11 @@ def resolverProblema(problema):
   # Percorrer linha da matriz correspondente a vertice inicial ('0')
   for idx_vizinho, peso in enumerate(problema.grafo[0]):
     if(peso>0):
-      problema.removeAresta(0, idx_vizinho)
       #Verifica se ainda é possível otimizar o resultado de acordo com o bound.
-      if(boundSomaArestasValidas(problema, peso) <= problema.tamanhoMaiorCicloSimples):
-        problema.adicionaAresta(0, idx_vizinho, peso)
+      if(boundSomaArestasValidas(problema, 0) <= problema.tamanhoMaiorCicloSimples):
         continue
 
+      problema.removeAresta(0, idx_vizinho)
       buscaProdundidadeBB(problema, idx_vizinho, peso, [0])
       problema.adicionaAresta(0, idx_vizinho, peso)
       
