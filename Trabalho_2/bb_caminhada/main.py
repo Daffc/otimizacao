@@ -37,11 +37,9 @@ def buscaProdundidadeClassica(problema, vertice, total, caminho):
     # Caso exista aresta e vetor não foi visitado.
     if((peso>0) and problema.cores[idx_vizinho]):
 
-      problema.removeAresta(vertice, idx_vizinho)
       total += peso
       buscaProdundidadeClassica(problema, idx_vizinho, total, caminho)
       total -= peso
-      problema.adicionaAresta(vertice, idx_vizinho, peso)
 
   # Libera visitas à 'vertice' (cores[vertice] = 0).
   problema.mudarCor(vertice, 1)
@@ -57,28 +55,38 @@ def buscaProdundidadeClassica(problema, vertice, total, caminho):
 def boundSomaArestasValidas(problema, total):
   soma = total
 
+  cores_aux = problema.cores.copy()
+
   # pprint(problema.grafo) # PRINTDEBUG
-  # print(problema.cores) # PRINTDEBUG
-  for idx, linha_adj in enumerate(problema.grafo):
+  # for l in problema.grafo:  # PRINTDEBUG
+  #   print(l)                # PRINTDEBUG
+
+  # print("Cores2:", cores_aux) # PRINTDEBUG
+
+  for idx_lin, linha_adj in enumerate(problema.grafo):
     maximo = 0
-    for peso in linha_adj[idx:]:
-      aux = peso * problema.cores[idx]
-      if(aux > maximo):
-        maximo = aux      
+    if(cores_aux[idx_lin]):
+      cores_aux[idx_lin] = 0
+      for idx_col, peso in enumerate(linha_adj):
+        if((peso * cores_aux[idx_col]) > maximo):
+          maximo = peso
+                
     soma += maximo
-    # print("\n")
-  # print(total, soma, problema.tamanhoMaiorCicloSimples)
+
+  # print(total, soma, problema.tamanhoMaiorCicloSimples) # PRINTDEBUG
   # print("***", soma) # PRINTDEBUG
   return soma 
 
 
 # Busca em profundidade sem Bounds.
 def buscaProdundidadeBB(problema, vertice, total, caminho):
+
+
+  # print( *['  ' for x in caminho],  vertice +1) # PRINTDEBUG
+
   # Adiciona 'vertice' a caminho.
   caminho.append(vertice)
-  problema.nosArvore += 1
-  
-  
+
   # Caso exita aresta entre vertice atual e vertice 0 (início), uma solução viável foi encontrada.
   if( vertice == 0 ):
     # print(f"---- {total} ----", *[x+1 for x in caminho]) # PRINTDEBUG
@@ -91,6 +99,16 @@ def buscaProdundidadeBB(problema, vertice, total, caminho):
     caminho.pop()
     return  
 
+  #Adiciona vertice atual a árvore
+  problema.nosArvore += 1
+
+  # Caso caso não seja possível ultrapassar valor atual de caminho máximo, retornar(poda)
+  if(boundSomaArestasValidas(problema, total) <= problema.tamanhoMaiorCicloSimples):
+    # print("saindo:", vertice +1)
+    problema.mudarCor(vertice, 1)
+    caminho.pop()
+    return
+
   # Bloqueia visitas à 'vertice' (cores[vertice] = 0), garantindo ciclo simples.
   problema.mudarCor(vertice, 0)
 
@@ -98,23 +116,9 @@ def buscaProdundidadeBB(problema, vertice, total, caminho):
   for idx_vizinho, peso in enumerate(problema.grafo[vertice]):
     # Caso exista aresta e vetor não foi visitado.
     if((peso>0) and problema.cores[idx_vizinho]):
-      
-
-      problema.removeAresta(vertice, idx_vizinho)
       total += peso
-      # Caso caso não seja possível ultrapassar valor atual de caminho máximo, retornar(poda)
-      if(boundSomaArestasValidas(problema, total) <= problema.tamanhoMaiorCicloSimples):
-        # pprint(problema.grafo) # PRINTDEBUG
-        # print('\n') # PRINTDEBUG
-        # print("caminho:", caminho) # PRINTDEBUG
-        problema.mudarCor(vertice, 1)
-        total -= peso
-        problema.adicionaAresta(vertice, idx_vizinho, peso)
-        caminho.pop()
-        return
       buscaProdundidadeBB(problema, idx_vizinho, total, caminho)
       total -= peso
-      problema.adicionaAresta(vertice, idx_vizinho, peso)
 
   # Libera visitas à 'vertice' (cores[vertice] = 1).
   problema.mudarCor(vertice, 1)
@@ -171,9 +175,6 @@ def resolverProblema(problema):
   # Percorrer linha da matriz correspondente a vertice inicial ('0')
   for idx_vizinho, peso in enumerate(problema.grafo[0]):
     if(peso>0):
-      #Verifica se ainda é possível otimizar o resultado de acordo com o bound.
-      if(boundSomaArestasValidas(problema, 0) <= problema.tamanhoMaiorCicloSimples):
-        continue
 
       problema.removeAresta(0, idx_vizinho)
       buscaProdundidadeBB(problema, idx_vizinho, peso, [0])
@@ -181,8 +182,8 @@ def resolverProblema(problema):
       
   problema.tempobb = datetime.now() - problema.tempobb
 
-  print(problema.tamanhoMaiorCicloSimples)
-  print(*[x+1 for x in problema.maiorCicloISmples])
+  print( problema.tamanhoMaiorCicloSimples)
+  print( *[x+1 for x in problema.maiorCicloISmples])
   print(f"nos_arvore: {problema.nosArvore}\ntempo: {problema.tempobb}", file=sys.stderr)
 
   # problema.imprimeProblema() # PRINTDEBUG
