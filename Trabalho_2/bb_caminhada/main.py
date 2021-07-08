@@ -15,7 +15,7 @@ def buscaProdundidadeClassica(problema, vertice, total, caminho):
   
   # Adiciona 'vertice' a caminho.
   caminho.append(vertice)
-  problema.nosArvore += 1
+  
   
   # Caso exita aresta entre vertice atual e vertice 0 (início), uma solução viável foi encontrada.
   if( vertice == 0 ):
@@ -29,6 +29,7 @@ def buscaProdundidadeClassica(problema, vertice, total, caminho):
     caminho.pop()
     return  
 
+  problema.nosArvore += 1
   # Bloqueia visitas à 'vertice' (cores[vertice] = 1), garantindo ciclo simples.
   problema.mudarCor(vertice, 0)
 
