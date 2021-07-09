@@ -4,7 +4,8 @@
 import sys
 from datetime import datetime
 from pprint import pprint
-from problema import Problema, constroiProblema 
+from problema import Problema, constroiProblema
+import bisect
   
 #----------------------------
 #       CLASSICO
@@ -13,77 +14,7 @@ from problema import Problema, constroiProblema
 # Busca em profundidade sem Bounds.
 def buscaProdundidadeClassica(problema, vertice, total, caminho):
   
-  # Adiciona 'vertice' a caminho.
-  caminho.append(vertice)
-  
-  
-  # Caso exita aresta entre vertice atual e vertice 0 (início), uma solução viável foi encontrada.
-  if( vertice == 0 ):
-    # print(f"---- {total} ----", *[x+1 for x in caminho]) # PRINTDEBUG
-
-    #Caso solução viável seja maxímal até o momento, armazenar caminho e tamanho.
-    if (total > problema.tamanhoMaiorCicloSimples):
-      problema.tamanhoMaiorCicloSimples = total
-      problema.maiorCicloISmples = caminho.copy()
-
-    caminho.pop()
-    return  
-
-  problema.nosArvore += 1
-  # Bloqueia visitas à 'vertice' (cores[vertice] = 1), garantindo ciclo simples.
-  problema.mudarCor(vertice, 0)
-
-  # Percorrer linha da matriz correspondente a 'vertice'
-  for idx_vizinho, peso in enumerate(problema.grafo[vertice]):
-    # Caso exista aresta e vetor não foi visitado.
-    if((peso>0) and problema.cores[idx_vizinho]):
-
-      total += peso
-      buscaProdundidadeClassica(problema, idx_vizinho, total, caminho)
-      total -= peso
-
-  # Libera visitas à 'vertice' (cores[vertice] = 0).
-  problema.mudarCor(vertice, 1)
-
-  # Remove 'vertice' de caminho.
-  caminho.pop()
-
-#----------------------------
-#       Branch and Bound
-#----------------------------
-
-#Percorre matriz de adjacência, somando valor para arestas cujos vetores ainda não foram visitados(cor = 1)
-def boundSomaArestasValidas(problema, total):
-  soma = total
-
-  cores_aux = problema.cores.copy()
-
-  # pprint(problema.grafo) # PRINTDEBUG
-  # for l in problema.grafo:  # PRINTDEBUG
-  #   print(l)                # PRINTDEBUG
-
-  # print("Cores2:", cores_aux) # PRINTDEBUG
-
-  for idx_lin, linha_adj in enumerate(problema.grafo):
-    maximo = 0
-    if(cores_aux[idx_lin]):
-      cores_aux[idx_lin] = 0
-      for idx_col, peso in enumerate(linha_adj):
-        if((peso * cores_aux[idx_col]) > maximo):
-          maximo = peso
-                
-    soma += maximo
-
-  # print(total, soma, problema.tamanhoMaiorCicloSimples) # PRINTDEBUG
-  # print("***", soma) # PRINTDEBUG
-  return soma 
-
-
-# Busca em profundidade sem Bounds.
-def buscaProdundidadeBB(problema, vertice, total, caminho):
-
-
-  # print( *['  ' for x in caminho],  vertice +1) # PRINTDEBUG
+  # print( *['  ' for x in caminho],  vertice ) # PRINTDEBUG
 
   # Adiciona 'vertice' a caminho.
   caminho.append(vertice)
@@ -103,26 +34,112 @@ def buscaProdundidadeBB(problema, vertice, total, caminho):
   #Adiciona vertice atual a árvore
   problema.nosArvore += 1
 
-  # Caso caso não seja possível ultrapassar valor atual de caminho máximo, retornar(poda)
-  if(boundSomaArestasValidas(problema, total) <= problema.tamanhoMaiorCicloSimples):
-    # print("saindo:", vertice +1)
-    problema.mudarCor(vertice, 1)
+  # Bloqueia visitas à 'vertice' (cores[vertice] = 0), garantindo ciclo simples.
+  problema.list_cores.remove(vertice)
+
+  set_testte = problema.list_cores.copy()
+  # Percorrer linha da matriz correspondente a 'vertice'
+  for idx_vizinho in set_testte:
+    peso = problema.grafo[vertice][idx_vizinho]
+    # Caso exista aresta e vetor não foi visitado.
+    if(peso>0):
+      total += peso
+      buscaProdundidadeClassica(problema, idx_vizinho, total, caminho)
+      total -= peso
+
+  # Libera visitas à 'vertice' (cores[vertice] = 1).
+  bisect.insort(problema.list_cores,vertice)
+
+  # Remove 'vertice' de caminho.
+  caminho.pop()
+
+#----------------------------
+#       Branch and Bound
+#----------------------------
+
+#Percorre matriz de adjacência, somando valor para arestas cujos vetores ainda não foram visitados(cor = 1)
+def boundSomaArestasValidas(problema, total):
+  soma = total
+
+  cores_idx = problema.list_cores.copy()
+
+  # print("cores_idx:", cores_idx) # PRINTDEBUG
+  # pprint(problema.grafo)
+
+  # while cores_idx:
+  #   idx = cores_idx.pop(0)
+  #   maximo = 0
+
+  #   for idx_col in cores_idx:
+  #     peso = problema.grafo[idx][idx_col]
+  #     if(peso  > maximo):
+  #       maximo = peso
+  #   print("maximo", idx, maximo)
+  #   soma += maximo
+
+  for idx in cores_idx[1:]:
+    maximo = 0
+    for idx_col in cores_idx:
+      peso = problema.grafo[idx][idx_col]
+      if(peso  > maximo):
+        maximo = peso
+    # print("maximo", idx, maximo)
+    soma += maximo
+    
+
+  # print(total, soma, problema.tamanhoMaiorCicloSimples) # PRINTDEBUG
+  # print("***", total, soma) # PRINTDEBUG
+  return soma 
+
+
+# Busca em profundidade sem Bounds.
+def buscaProdundidadeBB(problema, vertice, total, caminho):
+
+  # print( *['-' for x in caminho],  vertice +1) # PRINTDEBUG
+  # Adiciona 'vertice' a caminho.
+  caminho.append(vertice)
+  # print( [*[x+1 for x in caminho]])
+
+
+  # Caso exita aresta entre vertice atual e vertice 0 (início), uma solução viável foi encontrada.
+  if( vertice == 0 ):
+
+    #Caso solução viável seja maxímal até o momento, armazenar caminho e tamanho.
+    if (total > problema.tamanhoMaiorCicloSimples):
+      # print(f'parcial: {total}', [*[x+1 for x in caminho]]) # PRINTDEBUG
+
+      problema.tamanhoMaiorCicloSimples = total
+      problema.maiorCicloISmples = caminho.copy()
+
+    caminho.pop()
+    return  
+
+  #Adiciona vertice atual a árvore
+  problema.nosArvore += 1
+
+  # Caso caso não seja possível ultrapassar valor atual de caminho máximo, retornar(poda)+
+  coisa = boundSomaArestasValidas(problema, total) 
+  # print("saindo:", vertice +1, '---', coisa, '<=', problema.tamanhoMaiorCicloSimples)
+  if(coisa <= problema.tamanhoMaiorCicloSimples):    
     caminho.pop()
     return
 
   # Bloqueia visitas à 'vertice' (cores[vertice] = 0), garantindo ciclo simples.
-  problema.mudarCor(vertice, 0)
+  problema.list_cores.remove(vertice)
 
+  lista_atual = problema.list_cores.copy()
   # Percorrer linha da matriz correspondente a 'vertice'
-  for idx_vizinho, peso in enumerate(problema.grafo[vertice]):
+  for idx_vizinho in lista_atual:
+    
+    peso = problema.grafo[vertice][idx_vizinho]
     # Caso exista aresta e vetor não foi visitado.
-    if((peso>0) and problema.cores[idx_vizinho]):
+    if(peso>0):
       total += peso
       buscaProdundidadeBB(problema, idx_vizinho, total, caminho)
       total -= peso
 
   # Libera visitas à 'vertice' (cores[vertice] = 1).
-  problema.mudarCor(vertice, 1)
+  bisect.insort(problema.list_cores,vertice)
 
   # Remove 'vertice' de caminho.
   caminho.pop()
@@ -159,13 +176,13 @@ def resolverProblema(problema):
   # problema.imprimeProblema() # PRINTDEBUG
   print("---------------------") # PRINTDEBUG
 
-
   #############################
   # Problema Branch and Bound #
   #############################
   problema.tamanhoMaiorCicloSimples = 0
   problema.maiorCicloISmples = []
-  problema.cores = [1] * problema.vertices
+  # problema.cores = [1] * problema.vertices
+  problema.list_cores = [s for s in range(problema.vertices)]
 
   print("-------- BB --------") # PRINTDEBUG
   # problema.imprimeProblema() # PRINTDEBUG
