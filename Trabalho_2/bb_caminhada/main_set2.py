@@ -79,7 +79,7 @@ def boundSomaArestasValidas(problema, total):
   #   print("maximo", idx, maximo)
   #   soma += maximo
 
-  for idx in cores_idx:
+  for idx in cores_idx[1:]:
     maximo = 0
     for idx_col in cores_idx:
       peso = problema.grafo[idx][idx_col]
@@ -121,8 +121,8 @@ def buscaProdundidadeBB(problema, vertice, total, caminho):
 
   # Caso caso não seja possível ultrapassar valor atual de caminho máximo, retornar(poda)+
   coisa = boundSomaArestasValidas(problema, total) 
-  if(coisa<= problema.tamanhoMaiorCicloSimples):
-    # print("saindo:", vertice +1, '---', coisa)
+  # print("saindo:", vertice +1, '---', coisa, '<=', problema.tamanhoMaiorCicloSimples)
+  if(coisa <= problema.tamanhoMaiorCicloSimples):    
     # problema.mudarCor(vertice, 1)
     caminho.pop()
     return
