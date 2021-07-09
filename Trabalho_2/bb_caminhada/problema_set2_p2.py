@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import sys
-from helper import verificaTransformacao
+from helper_p2 import verificaTransformacao
 from pprint import pprint
 
 #Classe agregando estrutudas do problema e suas funcionalidades.

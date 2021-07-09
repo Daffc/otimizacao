@@ -176,7 +176,7 @@ def resolverProblema(problema):
 
   
   print(problema.tamanhoMaiorCicloSimples)
-  print([x+1 for x in problema.maiorCicloISmples])
+  print >> sys.stderr, ' '.join([str(x+1) for x in problema.maiorCicloISmples])
   print >> sys.stderr, "nos_arvore:", problema.nosArvore, "\ntempo:", problema.tempo
 
   # problema.imprimeProblema() # PRINTDEBUG
@@ -214,7 +214,7 @@ def resolverProblema(problema):
   problema.tempobb = datetime.now() - problema.tempobb
 
   print( problema.tamanhoMaiorCicloSimples)
-  print([x+1 for x in problema.maiorCicloISmples])
+  print >> sys.stderr, ' '.join([str(x+1) for x in problema.maiorCicloISmples])
   print >> sys.stderr, "nos_arvore:", problema.nosArvore, "\ntempo:", problema.tempobb 
 
   # problema.imprimeProblema() # PRINTDEBUG
