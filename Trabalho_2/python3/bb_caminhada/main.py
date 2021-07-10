@@ -1,11 +1,10 @@
-# -*- coding: utf-8 -*-
 #TODO: Remover linhas com "# PRINTDEBUG"
 
 
 import sys
 from datetime import datetime
 from pprint import pprint
-from problema_set2_p2 import Problema, constroiProblema
+from .problema import Problema, constroiProblema
 import bisect
   
 #----------------------------
@@ -27,7 +26,7 @@ def buscaProdundidadeClassica(problema, vertice, total, caminho):
     #Caso solução viável seja maxímal até o momento, armazenar caminho e tamanho.
     if (total > problema.tamanhoMaiorCicloSimples):
       problema.tamanhoMaiorCicloSimples = total
-      problema.maiorCicloISmples = list(caminho)
+      problema.maiorCicloISmples = caminho.copy()
 
     caminho.pop()
     return  
@@ -36,10 +35,9 @@ def buscaProdundidadeClassica(problema, vertice, total, caminho):
   problema.nosArvore += 1
 
   # Bloqueia visitas à 'vertice' (cores[vertice] = 0), garantindo ciclo simples.
-  # problema.mudarCor(vertice, 0)
   problema.list_cores.remove(vertice)
 
-  set_testte = list(problema.list_cores)
+  set_testte = problema.list_cores.copy()
   # Percorrer linha da matriz correspondente a 'vertice'
   for idx_vizinho in set_testte:
     peso = problema.grafo[vertice][idx_vizinho]
@@ -50,7 +48,6 @@ def buscaProdundidadeClassica(problema, vertice, total, caminho):
       total -= peso
 
   # Libera visitas à 'vertice' (cores[vertice] = 1).
-  # problema.mudarCor(vertice, 1)
   bisect.insort(problema.list_cores,vertice)
 
   # Remove 'vertice' de caminho.
@@ -64,7 +61,7 @@ def buscaProdundidadeClassica(problema, vertice, total, caminho):
 def boundSomaArestasValidas(problema, total):
   soma = total
 
-  cores_idx = list(problema.list_cores)
+  cores_idx = problema.list_cores.copy()
 
   # print("cores_idx:", cores_idx) # PRINTDEBUG
   # pprint(problema.grafo)
@@ -112,7 +109,7 @@ def buscaProdundidadeBB(problema, vertice, total, caminho):
       # print(f'parcial: {total}', [*[x+1 for x in caminho]]) # PRINTDEBUG
 
       problema.tamanhoMaiorCicloSimples = total
-      problema.maiorCicloISmples = list(caminho)
+      problema.maiorCicloISmples = caminho.copy()
 
     caminho.pop()
     return  
@@ -124,15 +121,13 @@ def buscaProdundidadeBB(problema, vertice, total, caminho):
   coisa = boundSomaArestasValidas(problema, total) 
   # print("saindo:", vertice +1, '---', coisa, '<=', problema.tamanhoMaiorCicloSimples)
   if(coisa <= problema.tamanhoMaiorCicloSimples):    
-    # problema.mudarCor(vertice, 1)
     caminho.pop()
     return
 
   # Bloqueia visitas à 'vertice' (cores[vertice] = 0), garantindo ciclo simples.
-  # problema.mudarCor(vertice, 0)
   problema.list_cores.remove(vertice)
 
-  lista_atual = list(problema.list_cores)
+  lista_atual = problema.list_cores.copy()
   # Percorrer linha da matriz correspondente a 'vertice'
   for idx_vizinho in lista_atual:
     
@@ -144,7 +139,6 @@ def buscaProdundidadeBB(problema, vertice, total, caminho):
       total -= peso
 
   # Libera visitas à 'vertice' (cores[vertice] = 1).
-  # problema.mudarCor(vertice, 1)
   bisect.insort(problema.list_cores,vertice)
 
   # Remove 'vertice' de caminho.
@@ -158,36 +152,29 @@ def resolverProblema(problema):
   # Problema Classico #
   #####################
 
-  print("------ Classico --------") # PRINTDEBUG
-  # problema.imprimeProblema() # PRINTDEBUG
+  # print("------ Classico --------") # PRINTDEBUG
+  # # problema.imprimeProblema() # PRINTDEBUG
 
 
-  problema.tempo = datetime.now()
-  problema.nosArvore = 1
+  # problema.tempo = datetime.now()
+  # problema.nosArvore = 1
 
-  # Percorrer linha da matriz correspondente a 'vertice'
-  for idx_vizinho, peso in enumerate(problema.grafo[0]):
-    if(peso>0):
-      problema.removeAresta(0, idx_vizinho)      
-      buscaProdundidadeClassica(problema, idx_vizinho, peso, [0])
-      problema.adicionaAresta(0, idx_vizinho, peso)
+  # # Percorrer linha da matriz correspondente a 'vertice'
+  # for idx_vizinho, peso in enumerate(problema.grafo[0]):
+  #   if(peso>0):
+  #     problema.removeAresta(0, idx_vizinho)      
+  #     buscaProdundidadeClassica(problema, idx_vizinho, peso, [0])
+  #     problema.adicionaAresta(0, idx_vizinho, peso)
       
-  problema.tempo = datetime.now() - problema.tempo
+  # problema.tempo = datetime.now() - problema.tempo
 
   
-  print(problema.tamanhoMaiorCicloSimples)
-  print >> sys.stderr, ' '.join([str(x+1) for x in problema.maiorCicloISmples])
-  print >> sys.stderr, "nos_arvore:", problema.nosArvore, "\ntempo:", problema.tempo
+  # print(problema.tamanhoMaiorCicloSimples)
+  # print(*[x+1 for x in problema.maiorCicloISmples])
+  # print(f"nos_arvore: {problema.nosArvore}\ntempo: {problema.tempo}", file=sys.stderr)
 
-  # problema.imprimeProblema() # PRINTDEBUG
-  print("---------------------") # PRINTDEBUG
-
-  # coiso = [0, 4, 5, 7, 8, 9]
-  # print(coiso)
-  # for i in coiso:
-  #   for j in coiso:
-  #     print(problema.grafo[i][j], end='\t')
-  #   print('')
+  # # problema.imprimeProblema() # PRINTDEBUG
+  # print("---------------------") # PRINTDEBUG
 
   #############################
   # Problema Branch and Bound #
@@ -214,8 +201,8 @@ def resolverProblema(problema):
   problema.tempobb = datetime.now() - problema.tempobb
 
   print( problema.tamanhoMaiorCicloSimples)
-  print >> sys.stderr, ' '.join([str(x+1) for x in problema.maiorCicloISmples])
-  print >> sys.stderr, "nos_arvore:", problema.nosArvore, "\ntempo:", problema.tempobb 
+  print( *[x+1 for x in problema.maiorCicloISmples])
+  print(f"nos_arvore: {problema.nosArvore}\ntempo: {problema.tempobb}", file=sys.stderr)
 
   # problema.imprimeProblema() # PRINTDEBUG
   print("---------------------") # PRINTDEBUG  
