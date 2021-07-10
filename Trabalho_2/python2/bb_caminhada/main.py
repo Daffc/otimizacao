@@ -72,19 +72,20 @@ def boundSomaArestasValidas(problema, total):
       peso = problema.grafo[idx][idx_col]
       if(peso  > maximo):
         maximo = peso
-    # print("maximo", idx, maximo)
+    # print("maximo", idx+1, maximo)
     soma += maximo
     
 
   # print(total, soma, problema.tamanhoMaiorCicloSimples) # PRINTDEBUG
   # print("***", total, soma) # PRINTDEBUG
+  # print( "//", soma, total)
   return soma 
 
 
 # Busca em profundidade sem Bounds.
 def buscaProdundidadeBB(problema, vertice, total, caminho):
 
-  # print( *['-' for x in caminho],  vertice +1) # PRINTDEBUG
+  # print(''.join(['-' for x in caminho]) + " " + str(vertice +1)) # PRINTDEBUG
   # Adiciona 'vertice' a caminho.
   caminho.append(vertice)
   # print( [*[x+1 for x in caminho]])
@@ -120,7 +121,7 @@ def buscaProdundidadeBB(problema, vertice, total, caminho):
       total += peso
 
       # Considerando a adição da aresta 'vertice -> idx_vizinho', estima se é possível obter uma melhor resposta que a atual.
-      if(boundSomaArestasValidas(problema, total + peso)  <= problema.tamanhoMaiorCicloSimples):    
+      if(boundSomaArestasValidas(problema, total)  <= problema.tamanhoMaiorCicloSimples):    
         # Caso não seja possível, passar para próximo vertice.
         total -= peso
         continue
