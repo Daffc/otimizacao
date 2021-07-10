@@ -37,7 +37,6 @@ def buscaProdundidadeClassica(problema, vertice, total, caminho):
   problema.nosArvore += 1
 
   # Bloqueia visitas à 'vertice' (cores[vertice] = 0), garantindo ciclo simples.
-  # problema.mudarCor(vertice, 0)
   problema.list_cores.remove(vertice)
 
   lista_atual = list(problema.list_cores)
@@ -52,7 +51,6 @@ def buscaProdundidadeClassica(problema, vertice, total, caminho):
       total -= peso
 
   # Libera visitas à 'vertice' (cores[vertice] = 1).
-  # problema.mudarCor(vertice, 1)
   bisect.insort(problema.list_cores,vertice)
 
   # Remove 'vertice' de caminho.
@@ -108,16 +106,7 @@ def buscaProdundidadeBB(problema, vertice, total, caminho):
   #Adiciona vertice atual a árvore
   problema.nosArvore += 1
 
-  # Caso caso não seja possível ultrapassar valor atual de caminho máximo, retornar(poda)+
-  coisa = boundSomaArestasValidas(problema, total) 
-  # print("saindo:", vertice +1, '---', coisa, '<=', problema.tamanhoMaiorCicloSimples)
-  if(coisa <= problema.tamanhoMaiorCicloSimples):    
-    # problema.mudarCor(vertice, 1)
-    caminho.pop()
-    return
-
   # Bloqueia visitas à 'vertice' (cores[vertice] = 0), garantindo ciclo simples.
-  # problema.mudarCor(vertice, 0)
   problema.list_cores.remove(vertice)
 
   lista_atual = list(problema.list_cores)
@@ -127,12 +116,19 @@ def buscaProdundidadeBB(problema, vertice, total, caminho):
     peso = problema.grafo[vertice][idx_vizinho]
     # Caso exista aresta e vetor não foi visitado.
     if(peso>0):
+
       total += peso
+
+      # Considerando a adição da aresta 'vertice -> idx_vizinho', estima se é possível obter uma melhor resposta que a atual.
+      if(boundSomaArestasValidas(problema, total + peso)  <= problema.tamanhoMaiorCicloSimples):    
+        # Caso não seja possível, passar para próximo vertice.
+        total -= peso
+        continue
+
       buscaProdundidadeBB(problema, idx_vizinho, total, caminho)
       total -= peso
 
   # Libera visitas à 'vertice' (cores[vertice] = 1).
-  # problema.mudarCor(vertice, 1)
   bisect.insort(problema.list_cores,vertice)
 
   # Remove 'vertice' de caminho.
@@ -189,6 +185,12 @@ def resolverProblema(problema):
     if(peso>0):
 
       problema.removeAresta(0, idx_vizinho)
+      
+      # Considerando a adição da aresta '0 -> idx_vizinho', estima se é possível obter uma melhor resposta que a atual.
+      if(boundSomaArestasValidas(problema, peso)  <= problema.tamanhoMaiorCicloSimples):    
+        # Caso não seja possível, passar para próximo vertice.
+        continue
+
       buscaProdundidadeBB(problema, idx_vizinho, peso, [0])
       problema.adicionaAresta(0, idx_vizinho, peso)
       
