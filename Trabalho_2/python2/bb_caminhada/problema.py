@@ -9,9 +9,9 @@ class Problema:
   def __init__(self):
     self.vertices = 0
     self.grafo = []
-    self.list_cores = []
-    self.maiorCicloISmples = []
-    self.tamanhoMaiorCicloSimples = 0
+    self.vert_validos = []
+    self.maiorCicloSimples = []
+    self.tamanhoCicloMax = 0
     self.nosArvore = 0
     self.tempo = 0
 
@@ -22,7 +22,7 @@ class Problema:
 
     self.vertices = vertices
     self.grafo = [[0 for col in range(vertices)] for row in range(vertices)]
-    self.list_cores = [s for s in range(vertices)]
+    self.vert_validos = [s for s in range(vertices)]
 
   #Verifica dados de entrada para arestas e chama "adicionaAresta".
   def verificaEAdicionaAresta(self, v_ori, v_dest, valor):
@@ -56,7 +56,7 @@ class Problema:
   def imprimeProblema(self):
     print(self.vertices)
     pprint(self.grafo)
-    print(self.list_cores)
+    print(self.vert_validos)
 
 
 # Lê entrada e define estruturas de problema.
