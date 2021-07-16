@@ -1,0 +1,233 @@
+------ Classico --------
+7
+1 2 3 1
+nos_arvore: 11
+tempo: 0:00:00.000317
+---------------------
+-------- BB --------
+7
+1 2 3 1
+nos_arvore: 5
+tempo: 0:00:00.000284
+---------------------
+exemplos/entrada/exemplo2_trabalho.txt
+------ Classico --------
+4
+1 2 4 3 1
+nos_arvore: 11
+tempo: 0:00:00.000333
+---------------------
+-------- BB --------
+4
+1 2 4 3 1
+nos_arvore: 11
+tempo: 0:00:00.000385
+---------------------
+exemplos/entrada/teste_10completo.txt
+------ Classico --------
+10
+1 2 3 4 5 6 7 8 9 10 1
+nos_arvore: 986410
+tempo: 0:00:00.340088
+---------------------
+-------- BB --------
+10
+1 2 3 4 5 6 7 8 9 10 1
+nos_arvore: 10
+tempo: 0:00:00.003135
+---------------------
+exemplos/entrada/teste_10completoRandomico.txt
+------ Classico --------
+787
+1 3 4 10 8 2 6 5 9 7 1
+nos_arvore: 986410
+tempo: 0:00:00.339713
+---------------------
+-------- BB --------
+787
+1 3 4 10 8 2 6 5 9 7 1
+nos_arvore: 1843
+tempo: 0:00:00.045522
+---------------------
+exemplos/entrada/teste_11completo.txt
+------ Classico --------
+11
+1 2 3 4 5 6 7 8 9 10 11 1
+nos_arvore: 9864101
+tempo: 0:00:02.982242
+---------------------
+-------- BB --------
+11
+1 2 3 4 5 6 7 8 9 10 11 1
+nos_arvore: 11
+tempo: 0:00:00.004174
+---------------------
+exemplos/entrada/teste_11completoRandomico.txt
+------ Classico --------
+943
+1 3 2 11 4 7 6 5 8 10 9 1
+nos_arvore: 9864101
+tempo: 0:00:02.940760
+---------------------
+-------- BB --------
+943
+1 3 2 11 4 7 6 5 8 10 9 1
+nos_arvore: 2331
+tempo: 0:00:00.058642
+---------------------
+exemplos/entrada/teste_1saida.txt
+------ Classico --------
+0
+
+nos_arvore: 17
+tempo: 0:00:00.000368
+---------------------
+-------- BB --------
+0
+
+nos_arvore: 17
+tempo: 0:00:00.000471
+---------------------
+exemplos/entrada/teste_3completo.txt
+------ Classico --------
+3
+1 2 3 1
+nos_arvore: 5
+tempo: 0:00:00.000236
+---------------------
+-------- BB --------
+3
+1 2 3 1
+nos_arvore: 3
+tempo: 0:00:00.000188
+---------------------
+exemplos/entrada/teste_4completo.txt
+------ Classico --------
+4
+1 2 3 4 1
+nos_arvore: 16
+tempo: 0:00:00.000404
+---------------------
+-------- BB --------
+4
+1 2 3 4 1
+nos_arvore: 4
+tempo: 0:00:00.000255
+---------------------
+exemplos/entrada/teste_4completo_ascendente.txt
+------ Classico --------
+14
+1 2 3 4 1
+nos_arvore: 16
+tempo: 0:00:00.000413
+---------------------
+-------- BB --------
+14
+1 2 3 4 1
+nos_arvore: 11
+tempo: 0:00:00.000465
+---------------------
+exemplos/entrada/teste_5completo.txt
+------ Classico --------
+5
+1 2 3 4 5 1
+nos_arvore: 65
+tempo: 0:00:00.001160
+---------------------
+-------- BB --------
+5
+1 2 3 4 5 1
+nos_arvore: 5
+tempo: 0:00:00.000360
+---------------------
+exemplos/entrada/teste_5completoEspecifico.txt
+------ Classico --------
+43
+1 3 5 2 4 1
+nos_arvore: 65
+tempo: 0:00:00.001136
+---------------------
+-------- BB --------
+43
+1 3 5 2 4 1
+nos_arvore: 22
+tempo: 0:00:00.000970
+---------------------
+exemplos/entrada/teste_5completoRandomico.txt
+------ Classico --------
+320
+1 2 5 3 4 1
+nos_arvore: 65
+tempo: 0:00:00.001151
+---------------------
+-------- BB --------
+320
+1 2 5 3 4 1
+nos_arvore: 20
+tempo: 0:00:00.000927
+---------------------
+exemplos/entrada/teste_6completoRandomico.txt
+------ Classico --------
+454
+1 2 5 6 4 3 1
+nos_arvore: 326
+tempo: 0:00:00.004981
+---------------------
+-------- BB --------
+454
+1 2 5 6 4 3 1
+nos_arvore: 40
+tempo: 0:00:00.004787
+---------------------
+exemplos/entrada/teste_cicloExterno.txt
+------ Classico --------
+6
+1 2 4 5 6 3 1
+nos_arvore: 19
+tempo: 0:00:00.000411
+---------------------
+-------- BB --------
+6
+1 2 4 5 6 3 1
+nos_arvore: 10
+tempo: 0:00:00.000296
+---------------------
+exemplos/entrada/teste_cicloception.txt
+------ Classico --------
+4
+1 2 4 3 1
+nos_arvore: 15
+tempo: 0:00:00.000412
+---------------------
+-------- BB --------
+4
+1 2 4 3 1
+nos_arvore: 15
+tempo: 0:00:00.000564
+---------------------
+exemplos/entrada/teste_petersen.txt
+------ Classico --------
+9
+1 2 3 4 5 10 7 9 6 1
+nos_arvore: 274
+tempo: 0:00:00.003914
+---------------------
+-------- BB --------
+9
+1 2 3 4 5 10 7 9 6 1
+nos_arvore: 226
+tempo: 0:00:00.014215
+---------------------
+exemplos/entrada/teste_semciclo.txt
+------ Classico --------
+0
+
+nos_arvore: 3
+tempo: 0:00:00.000204
+---------------------
+-------- BB --------
+0
+
+nos_arvore: 3
+tempo: 0:00:00.000180
+---------------------

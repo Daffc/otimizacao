@@ -24,5 +24,6 @@ clean:
 
 purge: clean
 	-rm -rf venv || true
+	-rm -rf bb_caminhada/*.pyc
 	-rm -rf bb_caminhada/__pycache__
 	

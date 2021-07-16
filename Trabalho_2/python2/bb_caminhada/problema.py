@@ -8,8 +8,8 @@ class Problema:
 
   def __init__(self):
     self.vertices = 0
-    self.grafo = []
-    self.vert_validos = []
+    self.matAdj = []
+    self.verticesValidos = []
     self.maiorCicloSimples = []
     self.tamanhoCicloMax = 0
     self.nosArvore = 0
@@ -21,8 +21,8 @@ class Problema:
       exit('ERRO: Quatidade de vérices deve ser maior que 0.')
 
     self.vertices = vertices
-    self.grafo = [[0 for col in range(vertices)] for row in range(vertices)]
-    self.vert_validos = [s for s in range(vertices)]
+    self.matAdj = [[0 for col in range(vertices)] for row in range(vertices)]
+    self.verticesValidos = [s for s in range(vertices)]
 
   #Verifica dados de entrada para arestas e chama "adicionaAresta".
   def verificaEAdicionaAresta(self, v_ori, v_dest, valor):
@@ -40,23 +40,23 @@ class Problema:
     # Efetua adição de aresta
     self.adicionaAresta(v_ori, v_dest, valor)
 
-  # Adiciona Aresta a matriz de adjacência 'grafo'.
+  # Adiciona Aresta a matriz de adjacência 'matAdj'.
   def adicionaAresta(self, v_ori, v_dest, valor):
     # Adiciona valor a matrix de adjacencia(simétrica).
-    self.grafo[v_ori][v_dest] = self.grafo[v_dest][v_ori] = valor
+    self.matAdj[v_ori][v_dest] = self.matAdj[v_dest][v_ori] = valor
 
-  # Remove Aresta a matriz de adjacência 'grafo'.
+  # Remove Aresta a matriz de adjacência 'matAdj'.
   def removeAresta(self, v_ori, v_dest):
     # Adiciona valor a matrix de adjacencia(simétrica).
-    valor = self.grafo[v_ori][v_dest]
-    self.grafo[v_ori][v_dest] = self.grafo[v_dest][v_ori] = 0
+    valor = self.matAdj[v_ori][v_dest]
+    self.matAdj[v_ori][v_dest] = self.matAdj[v_dest][v_ori] = 0
     return valor
 
   # Imprime estruturas de Problema
   def imprimeProblema(self):
     print(self.vertices)
-    pprint(self.grafo)
-    print(self.vert_validos)
+    pprint(self.matAdj)
+    print(self.verticesValidos)
 
 
 # Lê entrada e define estruturas de problema.
